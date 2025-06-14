@@ -30,6 +30,10 @@ export class CartService {
 
   async getCart(cartId: string) {
     // implementar sua lógica aqui
+    const existingCart = await this.prisma.cart.findFirst({
+      where: { cartId },
+    });
+    return existingCart
   }
 
   async addItem(cartId: string, addItemDto: AddItemDto) {
@@ -45,6 +49,7 @@ export class CartService {
     }
 
     // continue com sua lógica aqui!
+    await this.prisma.cart.addItem(coffee)
   }
 
   async updateItem(cartId: string, itemId: string, updateItemDto: UpdateItemDto) {
@@ -61,10 +66,42 @@ export class CartService {
     }
 
     // continue com sua lógica ou refaça
+    await this.prisma.cart.updateItem(item)
   }
 
   async removeItem(cartId: string, itemId: string) {
+    const item = await this.prisma.cartItem.findFirst({
+      where: {
+        id: itemId,
+        cartId,
+      },
+    });
+
+    if (!item) {
+      throw new NotFoundException(`Item with ID ${itemId} not found in cart ${cartId}`);
+    }
+
+    await this.prisma.cart.removeItem(item)
 
     return { success: true };
+  }
+
+  async findItem(name:string, createAt: Date, tags: []) {
+
+    const coffees = await this.prisma.coffee.filter({
+      where: {
+        name: name,
+        tags: tags,
+        createAt: createAt
+       }
+
+    });
+
+    if (!coffees) {
+      throw new NotFoundException(`Coffee with name ${name} not found`);
+    }
+
+    // continue com sua lógica aqui!
+    return coffees
   }
 } 

@@ -23,8 +23,7 @@ model Coffee {
   updatedAt   DateTime   @updatedAt
   
   // Relacionamentos incompleto
-  tags        
-  cartItems  // 
+  tags        CoffeeTag[]
 }
 
 model Tag {
@@ -34,31 +33,41 @@ model Tag {
   updatedAt DateTime    @updatedAt
   
   // Relacionamentos 
-  coffees   CoffeeTag[]
+  coffees   CoffeeTag[] 
 }
 
 model CoffeeTag {
+  id        String  @id @default(uuid())
   coffeeId  String
   tagId     String
   // Relacionamentos aqui
+  cafe    Coffee   @relation(fields: [coffeeId], references: [id])
+  tag    Tag   @relation(fields: [tagId], references: [id])
 }
 
 model Cart {
-  id        String     @id @default(uuid())
-  userId    String?    // Opcional para usuários não autenticados
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  id              String     @id @default(uuid())
+  status          String
+  status_payment  String
+  userId          String?    // Opcional para usuários não autenticados
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+  itemsId         String
   
   // Relacionamentos incompleto
-  items     CartItem[]
+  items           CartItem[] @relation(fields: [itemsId], references: [id])
 }
 
 model CartItem {
   id         String   @id @default(uuid())
-  quantity   Int
+  quantity   Int      
   unitPrice  Decimal  @db.Decimal(10, 2)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+  coffeeId   String
+  cartId     String
   
   // Relacionamentos aqui
+  coffee     Coffee   @relation(fields: [coffeeId], references: [id])
+  cart       Cart     @relation(fields: [cartId], references: [id])
 }

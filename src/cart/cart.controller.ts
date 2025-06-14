@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, HttpStatus, HttpCode } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, HttpStatus, HttpCode, Query } from '@nestjs/common';
 import { CartService } from './cart.service';
 import { AddItemDto } from './dto/add-item.dto';
 
@@ -15,6 +15,11 @@ export class CartController {
   @Get(':id')
   async getCart(@Param('id') id: string) {
     return this.cartService.getCart(id);
+  }
+
+  @Get('filter')
+  async findItem(@Query(name) name: string, @Query(date) date: string, @Query(tags) tags: []) {
+    return this.cartService.findItem(name, date, tags);
   }
 
   @Post(':id/items')
