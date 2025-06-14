@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Body, Param, HttpStatus, HttpCode, Query } from '@nestjs/common';
 import { CoffeesService } from './coffees.service';
 import { CreateCoffeeDto } from './dto/create-coffee.dto';
+import { Coffee } from './entities/coffee.entity';
 
 @Controller('coffees')
 export class CoffeesController {
@@ -42,6 +43,20 @@ export class CoffeesController {
   async create(@Body() createCoffeeDto: CreateCoffeeDto) {
     return this.coffeesService.create(createCoffeeDto);
   }
+
+  @Get('filter')
+  async searchCoffees(@Param() coffee: Coffee) {
+    return this.coffeesService.searchCoffees(coffee);
+
+  @Delete('delete')
+    async remove(@Query(cartId) cartId: string, @Query(itemId) itemId: string) {
+      return this.coffeesService.remove(cartId, itemId);
+    }
+
+  @Patch('update')
+    async update(@Query(cartId) cartId: string, @Query(itemId) itemId: string) {
+      return this.coffeesService.update(cartId, itemId);
+    }
 
   // adicionar outro endpoints
 } 

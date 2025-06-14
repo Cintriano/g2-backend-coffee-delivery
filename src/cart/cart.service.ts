@@ -52,7 +52,7 @@ export class CartService {
     await this.prisma.cart.addItem(coffee)
   }
 
-  async updateItem(cartId: string, itemId: string, updateItemDto: UpdateItemDto) {
+  async updateItem(cartId: string, itemId: string) {
     // Verificar se o item existe no carrinho
     const item = await this.prisma.cartItem.findFirst({
       where: {
@@ -86,22 +86,4 @@ export class CartService {
     return { success: true };
   }
 
-  async findItem(name:string, createAt: Date, tags: []) {
-
-    const coffees = await this.prisma.coffee.filter({
-      where: {
-        name: name,
-        tags: tags,
-        createAt: createAt
-       }
-
-    });
-
-    if (!coffees) {
-      throw new NotFoundException(`Coffee with name ${name} not found`);
-    }
-
-    // continue com sua lógica aqui!
-    return coffees
-  }
 } 

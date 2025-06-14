@@ -17,11 +17,6 @@ export class CartController {
     return this.cartService.getCart(id);
   }
 
-  @Get('filter')
-  async findItem(@Query(name) name: string, @Query(date) date: string, @Query(tags) tags: []) {
-    return this.cartService.findItem(name, date, tags);
-  }
-
   @Post(':id/items')
   @HttpCode(HttpStatus.CREATED)
   async addItem(@Param('id') id: string, @Body() addItemDto: AddItemDto) {

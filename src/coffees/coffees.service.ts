@@ -52,10 +52,17 @@ export class CoffeesService {
     // return this.prisma.coffee.create({data: {}});
   }
 
-  async update(id: string, updateCoffeeDto: UpdateCoffeeDto) {
-    // código de implementação aqui
+  async update(coffeeId: string, updateCoffeeDto: UpdateCoffeeDto) {
+    const coffee = await this.prisma.cartItem.findFirst({
+      where: {
+        id: coffeeId
+      },
+    });
 
-    // Atualizar os dados do café
+    if (!coffee) {
+      throw new NotFoundException(`Coffee with ID ${coffeeId} not found}`);
+    }
+
     return this.prisma.coffee.update({
       where: { id },
       data: [], // seu dados atualziados iserir aqui
@@ -69,10 +76,20 @@ export class CoffeesService {
     });
   }
 
-  async remove(id: string) {
-    //  1 - Verificar se o café existe
+  async remove(coffeeId: string) {
+    const coffee = await this.prisma.cartItem.findFirst({
+      where: {
+        id: coffeeId
+      },
+    });
 
-    // 2 - Remover o café
+    if (!coffee) {
+      throw new NotFoundException(`Coffee with ID ${coffeeId} not found}`);
+    }
+
+    await this.prisma.cart.removeItem(coffee)
+
+    return { success: true };
   }
 
   async searchCoffees(params: {
@@ -85,17 +102,20 @@ export class CoffeesService {
   }) {
     const { start_date, end_date, name, tags, limit = 10, offset = 0 } = params;
 
-    // Construir o filtro
+    const coffees = await this.prisma.coffee.filter({
+      where: {
+        name: name,
+        tags: tags,
+        createAt: start_date
+       }
 
-    // Filtro por data
+    });
 
-    // Filtro por nome
+    if (!coffees) {
+      throw new NotFoundException(`Coffee with name ${name} not found`);
+    }
 
-    // Filtro por tags
-
-    // Buscar os cafés com paginação
-
-    // Formatar a resposta
+    // continue com sua lógica aqui!
     return {
       data: [],
       pagination: {
